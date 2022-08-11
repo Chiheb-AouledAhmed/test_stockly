@@ -17,80 +17,62 @@ typedef pair<ll, ll> ii;
 typedef pair<ii, int> iii;
 
 
-
-class SampleClass {
-    private:
-        int val;
-    public:
-        void set(int a) {
-            val = a;
-        }
-        int get() {
-            return val;
-        }
-};
-
-struct typ{
-    string text="hello";
-    int value;
-};
-
 const int L = 18;
 ll n,m,k,a,b,c,l,r,nb,q;
 double tot;
 ll cnt;
-int ans[M];
+int dp[M];
 ll vis[M];
-vector<ii> v[M];
+vector<int> v[M];
 bool test;
 
-void dfs(int a,int p=-1,int ind=0){
 
-    cout<<a<<'\n';
-    if(((v[a].size()>1)&&(p!=-1))||(v[a].size()>2))
-        {test=false;
-        return;}
-    if(v[a].size()>1)
-    {
-        ans[v[a][0].y]=2;
-        dfs(v[a][0].x,a,0);
-        ans[v[a][1].y]=3;
-        dfs(v[a][1].x,a,1);
-        return;
-    }
-    if(ind)
-    {ans[v[a][0].y]=2;
-    dfs(v[a][0].x,a,0);}
-    else
-    {
-        ans[v[a][0].y]=3;
-        dfs(v[a][0].x,a,1);
-    }
-
-}
 
 void solve()
 {
     cin>>n;
-    for (int i=0;i<=n;i++)
-        v[i].clear();
-    for (int i=0;i<(n-1);i++)
+    for (int i=1;i<=n;i++)
     {
-        int a,b;
-        cin>>a>>b;
-        v[a].pb(mp(b,i));
-        v[b].pb(mp(a,i));
+
+        int a;
+        dp[i]=INF;
+        // adding edges bewtween i <--> i+1
+        if(i<n)
+        {
+            v[i].pb(i+1);
+            v[i+1].pb(i);
+        }
+        cin>>a;
+        // adding edges between i and a[i]  i ---> a[i]
+        v[i].pb(a);
+
     }
-    test=true;
-    dfs(1);
-    if(!test)
-    {
-        cout<<-1<<'\n';
-        return ;
+    //dijkstra
+    set<ii> s;
+    dp[1]=0;
+    s.insert(mp(0,1));
+    while(!s.empty()){
+        ii top = *(s.begin());
+        s.erase(s.begin());
+        /*cout<<"TOP \n";
+        cout<<top.x<<" "<<top.y<<'\n';
+        cout<<"---------------\n";*/
+        for (int i=0;i<v[top.y].size();i++)
+        {
+
+            int neighbor=v[top.y][i];
+            //cout<<top.y<<" "<<neighbor<<'\n';
+            if(dp[top.y]+1 < dp[neighbor])
+            {
+                dp[neighbor]=dp[top.y]+1 ;
+                s.insert(mp(dp[neighbor],neighbor));
+            }
+        }
+        //cout<<"---------------\n";
     }
-    for(int i=0;i<(n-1);i++)
-        cout<<ans[i]<<" ";
-    cout<<'\n';
+    for (int i=1;i<=n;i++)
+        cout<<dp[i]<<" ";
+
 
 
 }
@@ -101,8 +83,8 @@ int main()
     //ios_base::sync_with_stdio(0);
     //freopen("out.txt","w",stdout);
     //cin>>nb;
-    cin>>nb;
-
+    //cin>>nb;
+    nb=1;
     while(nb--)
         solve();
 
