@@ -17,14 +17,9 @@ typedef pair<ll, ll> ii;
 typedef pair<ii, int> iii;
 
 
-const int L = 18;
-ll n,m,k,a,b,c,l,r,nb,q;
-double tot;
-ll cnt;
+ll n,nb;
 int dp[M];
-ll vis[M];
 vector<int> v[M];
-bool test;
 
 
 
@@ -47,28 +42,34 @@ void solve()
         v[i].pb(a);
 
     }
-    //dijkstra
+    //dijkstra implementation 
     set<ii> s;
+    //initializing :
+    //  dp[1]=0 distance to get from 1 to 1 is always 0
+    //  s contains the set of pairs (minimum distance of node , node number)
+    //  pushing the first pair (0,1) into the set s =====> ( distance of 1 = 0, node number =1 )
     dp[1]=0;
     s.insert(mp(0,1));
+
+
+    // while set not empty loop : looping through all of the pairs (btw s is an ordered data structure with the 
+    // default comparator < of pairs which compares the first index of pair then the seocnd one)
+
     while(!s.empty()){
-        ii top = *(s.begin());
-        s.erase(s.begin());
-        /*cout<<"TOP \n";
-        cout<<top.x<<" "<<top.y<<'\n';
-        cout<<"---------------\n";*/
-        for (int i=0;i<v[top.y].size();i++)
+        ii top = *(s.begin()); // top is the lowest pair
+        s.erase(s.begin()); // erasing the lowest pair
+        
+        for (int i=0;i<v[top.y].size();i++) // looping through all of the neighbors
         {
 
             int neighbor=v[top.y][i];
             //cout<<top.y<<" "<<neighbor<<'\n';
-            if(dp[top.y]+1 < dp[neighbor])
+            if(dp[top.y]+1 < dp[neighbor]) // if there's a shorter path  update the distance and insert the updated pair into the set
             {
-                dp[neighbor]=dp[top.y]+1 ;
-                s.insert(mp(dp[neighbor],neighbor));
+                dp[neighbor]=dp[top.y]+1 ; // updating the distance
+                s.insert(mp(dp[neighbor],neighbor)); // inserting the new pair
             }
         }
-        //cout<<"---------------\n";
     }
     for (int i=1;i<=n;i++)
         cout<<dp[i]<<" ";
@@ -80,10 +81,7 @@ void solve()
 
 int main()
 {
-    //ios_base::sync_with_stdio(0);
-    //freopen("out.txt","w",stdout);
-    //cin>>nb;
-    //cin>>nb;
+    ios_base::sync_with_stdio(0);
     nb=1;
     while(nb--)
         solve();
